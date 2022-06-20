@@ -35,22 +35,24 @@ If size is a concern, an `alpine` image is also available.
     # Enable management plugin
    rabbitmq-plugins enable rabbitmq_management
     ```
-5. Pull `Postgres` image from dockerhub
-6. A few steps are needed to configure the container
-    1.Run `docker run --name <c_name> -e POSTGRES_PASSWORD=<some_password> -d <image_name>`
-    2.Go inside the container `docker exec -it <c_name> bash`
-    3.Create database for the consumer application
+
+### Running PSQL and Consumer
+
+1. Pull `Postgres` image from dockerhub
+2. Run `docker run --name <c_name> -e POSTGRES_PASSWORD=<some_password> -d <image_name>`
+3. Go inside the container `docker exec -it <c_name> bash`
+4. Create database for the consumer application
     ```
     psql -U postgres
     CREATE DATABASE <db_name>; // DON'T forget the semmicolon
     GRANT PRIVILEGES ON DATABASE <db_name> TO postgres;
     ```
-    4.`psql` CLI allows execution of standard SQL statements to view and interact with tables.
-7. Build and run docker image for consumer
-```
-# Open terminal in app root folder(dockerfile is accessible)
-docker build --tag <name>:<tag>
+5. `psql` CLI allows execution of standard SQL statements to view and interact with tables.
+6. Build and run docker image for consumer
+    ```
+    # Open terminal in app root folder(dockerfile is accessible)
+    docker build --tag <name>:<tag>
 
-# Run the image in container, the app assumes that RabbitMQ and Postgres are using the same <host_name>
-docker run -d -it --rm --net <network_name> --name <c_name> -e RABBIT_HOST=<host_name> -e RABBIT_PORT=5672 -e RABBIT_USER=guest -e RABBIT_PASS=guest -e PSQL_USER=postgres -e PSQL_PASS=<some_password> -e PSQL_PORT=5432 -e PSQL_NAME=<db_name> <name>:<tag>
-``` 
+    # Run the image in container, the app assumes that RabbitMQ and Postgres are using the same <host_name>
+    docker run -d -it --rm --net <network_name> --name <c_name> -e RABBIT_HOST=<host_name> -e RABBIT_PORT=5672 -e RABBIT_USER=guest -e RABBIT_PASS=guest -e PSQL_USER=postgres -e PSQL_PASS=<some_password> -e PSQL_PORT=5432 -e PSQL_NAME=<db_name> <name>:<tag>
+    ``` 
